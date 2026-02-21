@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mobilefactory.infrastructure.persistence.mapper.LottoNumberMapper">
+  <select id="findByParticipantId" resultType="mobilefactory.infrastructure.persistence.entity.LottoNumberEntity">
+    SELECT id, participant_id, numbers, prize_rank AS rank, issued_at 
+    FROM lotto_number 
+    WHERE participant_id = #{participantId}
+  </select>
+  
+  <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO lotto_number (participant_id, numbers, prize_rank, issued_at)
+    VALUES (#{participantId}, #{numbers}, #{rank}, #{issuedAt})
+  </insert>
+</mapper>

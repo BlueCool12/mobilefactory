@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mobilefactory.infrastructure.persistence.mapper.ParticipantMapper">
+
+  <select id="countByEventId" resultType="int">
+    SELECT COUNT(*) FROM PARTICIPANT WHERE event_id = #{eventId}
+  </select>
+
+  <select id="countGeneralParticipants" resultType="int">
+    SELECT COUNT(*)
+    FROM PARTICIPANT
+    WHERE event_id = #{eventId}
+    AND phone_number != #{preAssignedPhone}
+  </select>
+
+  <select id="existsByPhoneNumber" resultType="boolean">
+    <![CDATA[
+      SELECT CASE WHEN COUNT(*) > 0 THEN TRUE ELSE FALSE END 
+      FROM PARTICIPANT 
+      WHERE phone_number = #{phoneNumber} AND event_id = #{eventId}
+    ]]>
+  </select>
+
+  <select id="findByPhoneNumber" resultType="mobilefactory.infrastructure.persistence.entity.ParticipantEntity">
+    SELECT * FROM PARTICIPANT 
+    WHERE phone_number = #{phoneNumber} AND event_id = #{eventId}
+  </select>
+
+  <insert id="save" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO PARTICIPANT (event_id, phone_number, registered_at, is_verified, check_count)
+    VALUES (#{eventId}, #{phoneNumber}, #{registeredAt}, #{isVerified}, #{checkCount})
+  </insert>
+
+  <update id="update">
+    UPDATE PARTICIPANT
+    SET is_verified = #{isVerified}, check_count = #{checkCount}
+    WHERE id = #{id}
+  </update>
+
+  <select id="findByCheckCountAndRegisteredAtBefore" resultType="mobilefactory.infrastructure.persistence.entity.ParticipantEntity">
+    SELECT * FROM PARTICIPANT 
+    WHERE check_count = #{checkCount} AND registered_at &lt; #{registeredAt}
+  </select>
+
+  <select id="findUncheckedWinnersByAnnouncementDate" resultType="mobilefactory.infrastructure.persistence.entity.ParticipantEntity">
+    <![CDATA[
+      SELECT p.* 
+      FROM PARTICIPANT p
+      JOIN EVENT e ON p.event_id = e.id
+      JOIN lotto_number l ON p.id = l.participant_id
+      WHERE p.check_count = 0 
+        AND l.prize_rank > 0
+        AND e.announcement_start &gt;= #{startDate} 
+        AND e.announcement_start &lt; #{endDate}
+    ]]>
+  </select>
+
+</mapper>

@@ -1,0 +1,28 @@
+# application.yml
+spring:
+  application:
+    name: mobilefactory-event
+  datasource:
+    url: jdbc:h2:mem:lottodb;DB_CLOSE_DELAY=-1
+    username: sa
+    password: 
+    driver-class-name: org.h2.Driver
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+event:
+  lotto:
+    max-participants: 10000
+    prizes:      
+      second:
+        range-start: 2000
+        range-end: 7000
+      third:
+        range-start: 1000
+        range-end: 8000

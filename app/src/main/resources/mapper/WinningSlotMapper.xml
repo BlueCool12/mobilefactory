@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mobilefactory.infrastructure.persistence.mapper.WinningSlotMapper">
+
+  <insert id="insertBatch">
+    INSERT INTO WINNING_SLOT (event_id, sequence_no, prize_rank)
+    VALUES
+    <foreach collection="slots" item="slot" separator=",">
+      (#{eventId}, #{slot.sequenceNo}, #{slot.prizeRank})
+    </foreach>
+  </insert>
+
+  <select id="findRankBySequence" resultType="int">
+    SELECT prize_rank FROM WINNING_SLOT 
+    WHERE event_id = #{eventId} AND sequence_no = #{sequenceNo}
+  </select>
+
+</mapper>
